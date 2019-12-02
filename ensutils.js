@@ -1,3 +1,10 @@
+// STOP!
+// Are you thinking of using this in an app? Don't!
+// This script is designed for interactive use in the go-ethereum console.
+// For use in an app, consider one of these fine libraries:
+//  - https://www.npmjs.com/package/ethjs-ens
+//  - https://www.npmjs.com/package/ethereum-ens
+
 function namehash(name) {
     var node = '0x0000000000000000000000000000000000000000000000000000000000000000';
     if (name != '') {
@@ -210,7 +217,7 @@ var ensContract = web3.eth.contract([
     "type": "event"
   }
 ]);
-var ens = ensContract.at('0x314159265dd8dbb310642f98f50c066173c1259b');
+var ens = ensContract.at('0x00000000000000000000123');
 
 var auctionRegistrarContract = web3.eth.contract([
   {
@@ -994,35 +1001,21 @@ var resolverContract = web3.eth.contract([
       {
         "name": "node",
         "type": "bytes32"
-      }
-    ],
-    "name": "addr",
-    "outputs": [
-      {
-        "name": "ret",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "node",
-        "type": "bytes32"
       },
       {
-        "name": "kind",
-        "type": "bytes32"
+        "name": "contentTypes",
+        "type": "uint256"
       }
     ],
-    "name": "has",
+    "name": "ABI",
     "outputs": [
       {
-        "name": "",
-        "type": "bool"
+        "name": "contentType",
+        "type": "uint256"
+      },
+      {
+        "name": "data",
+        "type": "bytes"
       }
     ],
     "payable": false,
@@ -1036,11 +1029,15 @@ var resolverContract = web3.eth.contract([
         "type": "bytes32"
       },
       {
-        "name": "addr",
-        "type": "address"
+        "name": "x",
+        "type": "bytes32"
+      },
+      {
+        "name": "y",
+        "type": "bytes32"
       }
     ],
-    "name": "setAddr",
+    "name": "setPubkey",
     "outputs": [],
     "payable": false,
     "type": "function"
@@ -1064,6 +1061,80 @@ var resolverContract = web3.eth.contract([
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      }
+    ],
+    "name": "addr",
+    "outputs": [
+      {
+        "name": "ret",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "name": "contentType",
+        "type": "uint256"
+      },
+      {
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "setABI",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      }
+    ],
+    "name": "name",
+    "outputs": [
+      {
+        "name": "ret",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "setName",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -1081,22 +1152,180 @@ var resolverContract = web3.eth.contract([
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      }
+    ],
+    "name": "pubkey",
+    "outputs": [
+      {
+        "name": "x",
+        "type": "bytes32"
+      },
+      {
+        "name": "y",
+        "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "setAddr",
+    "outputs": [],
+    "payable": false,
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "name": "ensAddr",
         "type": "address"
       }
     ],
+    "payable": false,
     "type": "constructor"
   },
   {
-    "payable": false,
-    "type": "fallback"
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "a",
+        "type": "address"
+      }
+    ],
+    "name": "AddrChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ContentChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "NameChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "name": "contentType",
+        "type": "uint256"
+      }
+    ],
+    "name": "ABIChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "node",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "x",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "y",
+        "type": "bytes32"
+      }
+    ],
+    "name": "PubkeyChanged",
+    "type": "event"
   }
 ]);
-var publicResolver = resolverContract.at('0x1da022710df5002339274aadee8d58218e9d6ab5');
+
+function getAddr(name) {
+  var node = namehash(name)
+  var resolverAddress = ens.resolver(node);
+  if (resolverAddress === '0x0000000000000000000000000000000000000000') {
+    return resolverAddress;
+  }
+  return resolverContract.at(resolverAddress).addr(node);
+}
+
+var publicResolver = resolverContract.at(getAddr('resolver.eth'));
 
 var reverseRegistrarContract = web3.eth.contract([
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "name": "resolver",
+        "type": "address"
+      }
+    ],
+    "name": "claimWithResolver",
+    "outputs": [
+      {
+        "name": "node",
+        "type": "bytes32"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
   {
     "constant": false,
     "inputs": [
@@ -1130,6 +1359,19 @@ var reverseRegistrarContract = web3.eth.contract([
   },
   {
     "constant": true,
+    "inputs": [],
+    "name": "defaultResolver",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
         "name": "addr",
@@ -1147,12 +1389,17 @@ var reverseRegistrarContract = web3.eth.contract([
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "rootNode",
+    "constant": false,
+    "inputs": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "setName",
     "outputs": [
       {
-        "name": "",
+        "name": "node",
         "type": "bytes32"
       }
     ],
@@ -1166,8 +1413,8 @@ var reverseRegistrarContract = web3.eth.contract([
         "type": "address"
       },
       {
-        "name": "node",
-        "type": "bytes32"
+        "name": "resolverAddr",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -1175,15 +1422,6 @@ var reverseRegistrarContract = web3.eth.contract([
   }
 ]);
 var reverseRegistrar = reverseRegistrarContract.at(ens.owner(namehash('addr.reverse')));
-
-function getAddr(name) {
-  var node = namehash(name)
-  var resolverAddress = ens.resolver(node);
-  if (resolverAddress === '0x0000000000000000000000000000000000000000') {
-    return resolverAddress;
-  }
-  return resolverContract.at(resolverAddress).addr(node);
-}
 
 function getContent(name) {
   var node = namehash(name)
